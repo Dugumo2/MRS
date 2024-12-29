@@ -2,11 +2,14 @@ package com.epoch.mrs.controller;
 
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import com.epoch.mrs.annotation.OperationLog;
 import com.epoch.mrs.domain.dto.LoginDTO;
 import com.epoch.mrs.domain.enums.AdminStatus;
 import com.epoch.mrs.domain.enums.UserStatus;
 import com.epoch.mrs.domain.vo.Result;
 import com.epoch.mrs.domain.po.User;
+import com.epoch.mrs.domain.vo.ReviewUserVo;
 import com.epoch.mrs.domain.vo.UserVo;
 import com.epoch.mrs.service.IUserService;
 import com.epoch.mrs.service.MailService;
@@ -19,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,7 +72,6 @@ public class UserController {
      */
     @PostMapping("/email")
     public Result sendMail(@RequestParam String to){
-        log.info(to);
         try {
             mailService.sendVerificationCode(to);
         } catch (Exception e) {
@@ -122,7 +127,7 @@ public class UserController {
                         .setEmail(email)
                         .setPassword(encodedPassword)
                         .setUsername(logName)
-                        .setReviewTime(LocalDateTime.now())
+                        .setApplicationTime(LocalDateTime.now())
                         .setStatus(UserStatus.PENDING)
                         .setRole(AdminStatus.USER);
 
@@ -151,11 +156,11 @@ public class UserController {
      * @param loginDTO 登录条件
      * @return
      */
+    @OperationLog("用户登录")
     @PostMapping("/login")
     public Result login(@RequestBody LoginDTO loginDTO) {
         String account = loginDTO.getAccount();
         String rawPassword = loginDTO.getPassword();
-
 
         // 查询用户 - 使用or条件同时匹配email和username
         User user = userService.lambdaQuery()
@@ -168,6 +173,15 @@ public class UserController {
 
         if (user == null) {
             return Result.fail("用户不存在");
+        }
+
+        if(user.getStatus() == UserStatus.PENDING){
+            return Result.fail("用户正在审核中，请耐心等待");
+        } else if (user.getStatus() == UserStatus.REJECTED) {
+            // 从 Redis 获取剩余时间
+            String redisKey = "user:reject:" + user.getId();
+            Long expire = stringRedisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
+            return Result.fail("用户审核被拒绝，请" + expire + "秒后重试");
         }
 
         // 验证密码
@@ -190,9 +204,11 @@ public class UserController {
      * 用户登出
      * @return
      */
+    @OperationLog("用户登出")
     @PostMapping("/logout")
     public Result logout() {
         StpUtil.logout();
+        log.info("用户退出登录成功");
         return Result.ok();
     }
 
@@ -202,19 +218,90 @@ public class UserController {
      * @param rawPassword 旧密码
      * @return
      */
+    @OperationLog("修改密码")
     @PutMapping("/password")
     public Result changePassword(@RequestParam("rawPassword") String rawPassword, @RequestParam("newPassword") String newPassword) {
         int userId = StpUtil.getLoginIdAsInt();
         User user = userService.lambdaQuery().eq(User::getId, userId).one();
         String originalPassword = user.getPassword();
         if (!BCrypt.checkpw(rawPassword, originalPassword)) {
+            log.info("原密码错误，请重新输入          ");
             return Result.fail("原密码错误，请重新输入");
         }
         String encodedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         user.setPassword(encodedPassword);
         userService.updateById(user);
-
+        log.info("密码修改成功");
         return Result.ok("密码修改成功");
+    }
+
+
+    /**
+     * 获取用户列表，可以按时间排序并筛选未审核用户
+     * @param sortBy 排序字段，可选值：applicationTime, reviewTime
+     * @param order 排序方式，可选值：asc, desc
+     * @param status 筛选用户状态，可选值：0,1,2(PENDING, APPROVED, REJECTED)
+     * @return
+     */
+    @GetMapping("/reviewList")
+    public Result getReviewList(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) UserStatus status) {
+
+        // 获取所有用户列表
+        List<User> userList = userService.lambdaQuery().list();
+
+        // 如果需要筛选状态
+        if (status != null) {
+            userList = userList.stream()
+                    .filter(user -> user.getStatus() == status)
+                    .collect(Collectors.toList());
+        }
+
+        // 如果需要排序
+        if (sortBy != null) {
+            Comparator<User> comparator = null;
+            if ("applicationTime".equals(sortBy)) {
+                comparator = Comparator.comparing(User::getApplicationTime);
+            } else if ("reviewTime".equals(sortBy)) {
+                comparator = Comparator.comparing(User::getReviewTime);
+            }
+
+            if (comparator != null) {
+                if ("desc".equalsIgnoreCase(order)) {
+                    comparator = comparator.reversed();
+                }
+                userList = userList.stream()
+                        .sorted(comparator)
+                        .collect(Collectors.toList());
+            }
+        }
+
+        // 转换为 VO 对象
+        List<ReviewUserVo> reviewList = BeanUtil.copyToList(userList, ReviewUserVo.class);
+
+        // 返回结果
+        return Result.ok(reviewList);
+    }
+
+
+    @OperationLog("审核用户")
+    @PostMapping("/review")
+    public Result reviewUser(Integer userId ,Integer status){
+        User user = userService.lambdaQuery().eq(User::getId, userId).one();
+        if(!(status.equals(1) || status.equals(2))){
+            return Result.fail("请输入正确的状态");
+        }
+        if(status.equals(2)) {
+            // 审核拒绝逻辑 - 存入 Redis 并设置 5 分钟有效期
+            String redisKey = "user:reject:" + user.getId(); // Redis Key 格式
+            stringRedisTemplate.opsForValue().set(redisKey, user.getId().toString(), 5, TimeUnit.MINUTES);
+        }
+        user.setStatus(UserStatus.of(status))
+                .setReviewTime(LocalDateTime.now());
+        userService.updateById(user);
+        return Result.ok("更新用户状态成功");
     }
 
 }

@@ -4,6 +4,8 @@ spring:
     url: jdbc:mysql://47.108.61.243:3306/mrs?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root
     password: 279110233
+    hikari:
+      data-source: com.zaxxer.hikari.HikariDataSource
   servlet:
     multipart:
       # 单文件最大上传大小

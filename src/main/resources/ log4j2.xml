@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- JDBC Appender -->
+        <JDBC name="DatabaseAppender" tableName="logs">
+            <!-- 通过 SpringBeanFactory 引用 Spring 管理的 DataSource -->
+            <ConnectionSource
+                    class="org.apache.logging.log4j.core.appender.db.jdbc.DataSourceConnectionSource">
+                <Property name="dataSource">
+                    ${spring.datasource.hikari.data-source}
+                </Property>
+            </ConnectionSource>
+
+            <!-- Column Mappings -->
+            <ColumnMappings>
+                <ColumnMapping columnName="user_id" pattern="%X{userId}"/>
+                <ColumnMapping columnName="username" pattern="%X{username}"/>
+                <ColumnMapping columnName="action" pattern="%X{action}"/>
+                <ColumnMapping columnName="action_data" pattern="%X{actionData}"/>
+                <ColumnMapping columnName="log_level" pattern="%level"/>
+                <ColumnMapping columnName="log_message" pattern="%message"/>
+                <ColumnMapping columnName="timestamp" pattern="%d{yyyy-MM-dd HH:mm:ss}"/>
+            </ColumnMappings>
+        </JDBC>
+
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- 根日志记录器 -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="DatabaseAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
