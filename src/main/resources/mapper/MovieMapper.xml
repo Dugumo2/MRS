@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.epoch.mrs.mapper.MovieMapper">
+
+    <resultMap id="FilmInfoVoMap" type="com.epoch.mrs.domain.vo.FilmInfoVo">
+        <result property="title" column="title"/>
+        <result property="info" column="info"/>
+        <result property="description" column="description"/>
+        <result property="avgScore" column="avg_score"/>
+        <result property="imageUrl" column="image_url"/>
+    </resultMap>
+
+    <select id="selectFilmInfoVoPage" resultMap="FilmInfoVoMap" parameterType="map">
+        SELECT
+        f.title AS title,
+        f.info AS info,
+        f.description AS description,
+        f.avg_score AS avg_score,
+        f.image_url AS image_url
+        FROM
+        films f
+        <where>
+            <if test="type != null and type != ''">
+                f.category = #{type}
+            </if>
+        </where>
+    </select>
+
+</mapper>

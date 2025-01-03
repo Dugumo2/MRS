@@ -2,15 +2,17 @@ package com.epoch.mrs.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.epoch.mrs.domain.dto.PageDTO;
 import com.epoch.mrs.domain.po.Comment;
 import com.epoch.mrs.domain.po.Film;
+import com.epoch.mrs.domain.query.CommentQuery;
+import com.epoch.mrs.domain.vo.CommentVo;
 import com.epoch.mrs.domain.vo.Result;
 import com.epoch.mrs.service.ICommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -101,14 +103,14 @@ public class CommentController {
 
     @PostMapping("/delete")
     public Result deleteComment(@RequestParam int commentId) {
+
         return Result.ok();
     }
 
-    @GetMapping("/list/{filmId}")
-    public Result getCommentByFilm(@PathVariable int filmId) {
-        int loginId = StpUtil.getLoginIdAsInt();
-
-        return Result.ok();
+    @PostMapping("/list")
+    public Result getCommentByFilm(@RequestBody CommentQuery commentQuery) {
+        PageDTO<CommentVo> page = commentService.queryCommentsPage(commentQuery);
+        return Result.ok(page);
     }
 
 }

@@ -1,6 +1,9 @@
 package com.epoch.mrs.controller;
 
+import com.epoch.mrs.domain.dto.PageDTO;
 import com.epoch.mrs.domain.po.Film;
+import com.epoch.mrs.domain.query.MovieQuery;
+import com.epoch.mrs.domain.vo.FilmInfoVo;
 import com.epoch.mrs.domain.vo.Result;
 import com.epoch.mrs.service.IMovieService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +18,10 @@ public class MovieController {
     @Autowired
     private IMovieService movieService;
 
-    @GetMapping("/list")
-    public Result getMovieList() {
-        return Result.ok();
+    @PostMapping("/list")
+    public Result getMovieList(@RequestBody MovieQuery movieQuery) {
+        PageDTO<FilmInfoVo> page = movieService.queryFilmsPage(movieQuery);
+        return Result.ok(page);
     }
 
     @GetMapping("/{id}")
