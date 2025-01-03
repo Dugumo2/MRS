@@ -11,8 +11,8 @@ public enum UserStatus {
     REJECTED(2, "已拒绝");
 
     @EnumValue
-    int value;
-    String desc;
+    private int value;
+    private String desc;
 
     UserStatus(Integer value, String desc) {
         this.value = value;

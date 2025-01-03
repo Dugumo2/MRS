@@ -10,8 +10,8 @@ public enum AdminStatus {
         ADMIN(1, "admin");
 
         @EnumValue
-        int value;
-        String desc;
+        private int value;
+        private String desc;
 
         AdminStatus(Integer value, String desc) {
             this.value = value;
