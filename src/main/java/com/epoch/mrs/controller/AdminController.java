@@ -2,11 +2,8 @@ package com.epoch.mrs.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
-import com.epoch.mrs.domain.dto.FilmDTO;
+import com.epoch.mrs.domain.enums.CategoryStatus;
 import com.epoch.mrs.domain.enums.UserStatus;
-import com.epoch.mrs.domain.po.Film;
 import com.epoch.mrs.domain.po.User;
 import com.epoch.mrs.domain.vo.Result;
 import com.epoch.mrs.domain.vo.ReviewUserVo;
@@ -14,7 +11,9 @@ import com.epoch.mrs.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,8 +62,27 @@ public class AdminController {
         return Result.ok();
     }
 
+    private Long id;
+
+    private String title;
+
+    private String info;
+
+    private String description;
+
+    private BigDecimal avgScore;
+
+    private CategoryStatus category;
+
+    private String imageUrl;
+
+
     @PostMapping("/add")
-    public Result addFilmInfo(@RequestBody FilmDTO film) {
+    public Result addFilmInfo(@RequestParam String title,
+                              @RequestParam String info,
+                              @RequestParam String description,
+                              @RequestParam CategoryStatus category,
+                              @RequestParam MultipartFile img) {
         if(!StpUtil.hasRole("admin")){
             return Result.fail("你没有此权限完成该操作");
         }
