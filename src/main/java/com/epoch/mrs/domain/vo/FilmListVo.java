@@ -6,14 +6,11 @@ import java.math.BigDecimal;
 
 @Data
 @Accessors(chain = true)
-public class FilmInfoVo {
+public class FilmListVo {
     private Long id; // 主键
 
     private String title;
 
-    private String info;
-
-    private String description;
 
     private BigDecimal avgScore;
 

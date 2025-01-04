@@ -16,5 +16,5 @@ public interface MovieMapper extends BaseMapper<Film> {
      * @param type 电影类型，可选
      * @return 分页的 FilmInfoVo 列表
      */
-    IPage<FilmInfoVo> selectFilmInfoVoPage(IPage<FilmInfoVo> page, @Param("type") String type);
+    IPage<FilmInfoVo> selectFilmListVoPage(IPage<FilmInfoVo> page, @Param("type") String type);
 }

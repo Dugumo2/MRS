@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReviewUserVo {
+    private String id;
     private String username;
     private String email;
     private UserStatus status;

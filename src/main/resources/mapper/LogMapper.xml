@@ -6,6 +6,7 @@
 <mapper namespace="com.epoch.mrs.mapper.LogMapper">
 
     <resultMap id="LogVoMap" type="com.epoch.mrs.domain.vo.LogVo">
+        <result property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="action" column="action"/>
         <result property="logLevel" column="log_level"/>
@@ -15,6 +16,7 @@
 
     <select id="selectLogVoPage" resultMap="LogVoMap" parameterType="map">
         SELECT
+        l.id AS id,
         l.username AS username,
         l.action AS action,
         l.log_level AS log_level,

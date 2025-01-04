@@ -5,19 +5,18 @@
 
 <mapper namespace="com.epoch.mrs.mapper.MovieMapper">
 
-    <resultMap id="FilmInfoVoMap" type="com.epoch.mrs.domain.vo.FilmInfoVo">
+    <resultMap id="FilmListVoMap" type="com.epoch.mrs.domain.vo.FilmListVo">
+        <result property="id" column="id"/>
         <result property="title" column="title"/>
-        <result property="info" column="info"/>
-        <result property="description" column="description"/>
         <result property="avgScore" column="avg_score"/>
         <result property="imageUrl" column="image_url"/>
     </resultMap>
 
-    <select id="selectFilmInfoVoPage" resultMap="FilmInfoVoMap" parameterType="map">
+    <select id="selectFilmListVoPage" resultMap="FilmListVoMap" parameterType="map"
+            resultType="com.epoch.mrs.domain.vo.FilmListVo">
         SELECT
+        f.id AS id,
         f.title AS title,
-        f.info AS info,
-        f.description AS description,
         f.avg_score AS avg_score,
         f.image_url AS image_url
         FROM

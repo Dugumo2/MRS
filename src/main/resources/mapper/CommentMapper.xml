@@ -7,6 +7,7 @@
 
     <resultMap id="CommentVoMap" type="com.epoch.mrs.domain.vo.CommentVo">
         <result property="username" column="username"/>
+        <result property="id" column="id"/>
         <result property="content" column="content"/>
         <result property="score" column="score"/>
         <result property="createTime" column="create_time"/>
@@ -15,6 +16,7 @@
     <select id="selectCommentVoPage" resultMap="CommentVoMap" parameterType="map">
         SELECT
         u.username AS username,
+        c.id,
         c.content,
         c.score,
         c.create_time

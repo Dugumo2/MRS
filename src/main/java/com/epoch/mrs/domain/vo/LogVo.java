@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class LogVo {
+    private Long id; // 主键
+
     private String username; // 用户名
 
     private String action; // 操作类型

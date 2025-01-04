@@ -23,7 +23,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Film> implements 
         Page<FilmInfoVo> page = movieQuery.toMpPage();
 
         // 调用自定义的 Mapper 方法进行分页查询
-        IPage<FilmInfoVo> filmVoPage = movieMapper.selectFilmInfoVoPage(page, movieQuery.getType());
+        IPage<FilmInfoVo> filmVoPage = movieMapper.selectFilmListVoPage(page, movieQuery.getType());
 
         // 将 MyBatis-Plus 的 Page 转换为自定义的 PageDTO
         return PageDTO.from(filmVoPage);
