@@ -2,6 +2,7 @@ package com.epoch.mrs.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import com.aliyuncs.exceptions.ClientException;
 import com.epoch.mrs.annotation.OperationLog;
 import com.epoch.mrs.domain.dto.PageDTO;
 import com.epoch.mrs.domain.enums.CategoryStatus;
@@ -13,10 +14,13 @@ import com.epoch.mrs.domain.vo.Result;
 import com.epoch.mrs.domain.vo.ReviewUserVo;
 import com.epoch.mrs.service.ILogService;
 import com.epoch.mrs.service.IUserService;
+import com.epoch.mrs.utils.AliyunOSSUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,6 +106,19 @@ public class AdminController {
         if(!StpUtil.hasRole("admin")){
             return Result.fail("你没有此权限完成该操作");
         }
+
+        String imgUrl;
+        try {
+            imgUrl = AliyunOSSUtil.uploadFile(img);
+        } catch (IOException e) {
+            log.error("文件上传异常");
+            throw new RuntimeException(e);
+        } catch (ClientException e) {
+            log.error("阿里云oss客户端异常");
+            throw new RuntimeException(e);
+
+        }
+
         return Result.ok();
     }
 
