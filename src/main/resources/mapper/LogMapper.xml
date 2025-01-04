@@ -26,7 +26,7 @@
         logs l
         <where>
             <if test="userName != null and userName != ''">
-                l.username = #{userName}
+                l.username LIKE CONCAT('%', #{userName}, '%')
             </if>
             <if test="logLeveL > 0">
                 l.log_level =
