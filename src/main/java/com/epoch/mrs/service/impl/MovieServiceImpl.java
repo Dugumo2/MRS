@@ -10,7 +10,9 @@ import com.epoch.mrs.domain.vo.FilmInfoVo;
 import com.epoch.mrs.mapper.MovieMapper;
 import com.epoch.mrs.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MovieServiceImpl extends ServiceImpl<MovieMapper, Film> implements IMovieService {
     @Autowired
     private MovieMapper movieMapper;

@@ -11,7 +11,9 @@ import com.epoch.mrs.domain.vo.CommentVo;
 import com.epoch.mrs.mapper.CommentMapper;
 import com.epoch.mrs.service.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements ICommentService {
 
     @Autowired

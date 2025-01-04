@@ -1,11 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.108.61.243:3306/mrs?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    url: jdbc:mysql:/8.137.77.141:3306/mrs?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root
     password: 279110233
-    hikari:
-      data-source: com.zaxxer.hikari.HikariDataSource
   servlet:
     multipart:
       # 单文件最大上传大小
@@ -26,7 +24,7 @@ spring:
       "mail.smtp.timeout": 5000             # 建议设置，避免发送超时
   data:
     redis:
-      host: 47.108.61.243
+      host: 8.137.77.141
       port: 6379
       password: 123321
       database: 0
@@ -57,7 +55,7 @@ sa-token:
   auto-renew: true
 
 mybatis-plus:
-  type-aliases-package: com.dms.domain.po
+  type-aliases-package: com/epoch/mrs/domain/po
   global-config:
     db-config:
       id-type: auto # 全局id类型为自增长
@@ -65,16 +63,3 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
-
-
-logging:
-  level:
-    org.ehcache: debug
-
-
-#aliyun:
-#  oss:
-#    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-#    accessKeyId: LTAI4GCH1vX6DKqJWxd6nEuW
-#    accessKeySecret: yBshYweHOpqDuhCArrVHwIiBKpyqSL
-#    bucketName: web-397
