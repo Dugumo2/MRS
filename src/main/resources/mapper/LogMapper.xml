@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.epoch.mrs.mapper.LogMapper">
+
+    <resultMap id="LogVoMap" type="com.epoch.mrs.domain.vo.LogVo">
+        <result property="username" column="username"/>
+        <result property="action" column="action"/>
+        <result property="logLevel" column="log_level"/>
+        <result property="logMessage" column="log_message"/>
+        <result property="timestamp" column="timestamp"/>
+    </resultMap>
+
+    <select id="selectLogVoPage" resultMap="LogVoMap" parameterType="map">
+        SELECT
+        l.username AS username,
+        l.action AS action,
+        l.log_level AS log_level,
+        l.log_message AS log_message,
+        l.timestamp AS timestamp
+        FROM
+        logs l
+        <where>
+            <if test="userName != null and userName != ''">
+                l.username = #{userName}
+            </if>
+            <if test="logLeveL > 0">
+                l.log_level =
+                <choose>
+                    <when test="logLeveL == 1">
+                        'WARN'
+                    </when>
+                    <when test="logLeveL == 2">
+                        'ERROR'
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+</mapper>

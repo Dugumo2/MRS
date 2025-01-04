@@ -31,4 +31,7 @@ public class PageQuery {
         return this.toMpPage(new OrderItem().setAsc(false).setColumn("create_time"));
     }
 
+    public <T> Page<T> toMpPageDefaultSortByTimestampDesc() {
+        return this.toMpPage(new OrderItem().setAsc(false).setColumn("timestamp"));
+    }
 }
