@@ -62,20 +62,6 @@ public class AdminController {
         return Result.ok();
     }
 
-    private Long id;
-
-    private String title;
-
-    private String info;
-
-    private String description;
-
-    private BigDecimal avgScore;
-
-    private CategoryStatus category;
-
-    private String imageUrl;
-
 
     @PostMapping("/add")
     public Result addFilmInfo(@RequestParam String title,
