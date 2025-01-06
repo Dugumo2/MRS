@@ -8,6 +8,7 @@ import com.epoch.mrs.domain.dto.PageDTO;
 import com.epoch.mrs.domain.enums.CategoryStatus;
 import com.epoch.mrs.domain.enums.UserStatus;
 import com.epoch.mrs.domain.po.Film;
+import com.epoch.mrs.domain.po.Log;
 import com.epoch.mrs.domain.po.User;
 import com.epoch.mrs.domain.query.LogQuery;
 import com.epoch.mrs.domain.vo.LogVo;
@@ -116,7 +117,9 @@ public class AdminController {
         if(!StpUtil.hasRole("admin")){
             return Result.fail("你没有此权限完成该操作");
         }
-        return Result.ok();
+        Log one = logService.lambdaQuery().eq(Log::getId, logId).one();
+        logService.removeById(one);
+        return Result.ok("日志删除成功");
     }
 
 
