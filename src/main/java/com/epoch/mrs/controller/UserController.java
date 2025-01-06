@@ -193,7 +193,8 @@ public class UserController {
         StpUtil.login(user.getId());
         UserVo userVo = new UserVo().setSaTokenInfo(StpUtil.getTokenInfo())
                 .setEmail(user.getEmail())
-                .setUsername(user.getUsername());
+                .setUsername(user.getUsername())
+                .setRole(user.getRole().getValue());
 
 
         return Result.ok(userVo);

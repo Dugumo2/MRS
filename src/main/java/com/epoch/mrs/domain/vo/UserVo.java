@@ -9,7 +9,10 @@ import lombok.experimental.Accessors;
 public class UserVo {
 
     private SaTokenInfo saTokenInfo;
+
     private String username;
 
     private String email;
+
+    private Integer role;
 }
