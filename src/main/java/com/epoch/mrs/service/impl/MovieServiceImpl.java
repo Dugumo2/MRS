@@ -1,5 +1,6 @@
 package com.epoch.mrs.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,6 +12,8 @@ import com.epoch.mrs.mapper.MovieMapper;
 import com.epoch.mrs.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 public class MovieServiceImpl extends ServiceImpl<MovieMapper, Film> implements IMovieService {
@@ -27,5 +30,14 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Film> implements 
 
         // 将 MyBatis-Plus 的 Page 转换为自定义的 PageDTO
         return PageDTO.from(filmVoPage);
+    }
+
+    @Override
+    public boolean updateAvgScore(int filmId, BigDecimal newAvgScore) {
+        LambdaQueryWrapper<Film> updateWrapper = new LambdaQueryWrapper<>();
+        updateWrapper.eq(Film::getId, filmId);
+        Film film = new Film();
+        film.setAvgScore(newAvgScore);
+        return this.update(film, updateWrapper);
     }
 }

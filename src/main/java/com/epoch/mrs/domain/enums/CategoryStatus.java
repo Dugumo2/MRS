@@ -1,6 +1,7 @@
 package com.epoch.mrs.domain.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter
@@ -27,5 +28,11 @@ public enum CategoryStatus {
             }
         }
         throw new IllegalArgumentException("未知的类型 " + value);
+    }
+
+    // 添加静态方法，供 Spring 枚举转换器使用
+    @JsonCreator
+    public static CategoryStatus forValue(String value) {
+        return fromValue(value);
     }
 }

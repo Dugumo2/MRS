@@ -15,7 +15,7 @@ public class LogVo {
 
     private String action; // 操作类型
 
-    private Log.LogLevel logLevel; // 日志级别
+    private String logLevel; // 日志级别
 
     private String logMessage; // 日志内容
 

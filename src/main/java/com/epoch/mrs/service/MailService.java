@@ -35,11 +35,11 @@ public class MailService {
 
             helper.setFrom(fromEmail, nickname);
             helper.setTo(to);
-            helper.setSubject("【DMS系统】您的验证码");
+            helper.setSubject("【影评管理系统】您的验证码");
 
             String code = RandomUtil.randomNumbers(6);
 
-            stringRedisTemplate.opsForValue().set("DMS:code:" + to,code, 5, TimeUnit.MINUTES);
+            stringRedisTemplate.opsForValue().set("MRS:code:" + to,code, 5, TimeUnit.MINUTES);
 
             helper.setText("您的验证码是：" + code + "，5分钟内有效", false);
             javaMailSender.send(message);

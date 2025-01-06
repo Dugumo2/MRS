@@ -29,4 +29,13 @@
         <!-- ORDER BY 和 LIMIT 由 MyBatis-Plus 分页插件注入 -->
     </select>
 
+    <select id="getCommentIdsByFilmId" resultType="java.lang.Integer" parameterType="int">
+        SELECT
+            c.id
+        FROM
+            comments c
+        WHERE
+            c.film_id = #{filmId}
+    </select>
+
 </mapper>

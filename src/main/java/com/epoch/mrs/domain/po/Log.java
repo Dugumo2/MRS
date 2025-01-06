@@ -22,16 +22,10 @@ public class Log {
 
     private String action; // 操作类型
 
-    private LogLevel logLevel; // 日志级别
+    private String logLevel; // 日志级别
 
     private String logMessage; // 日志内容
 
     private LocalDateTime timestamp; // 日志时间
 
-    // 枚举类表示日志级别
-    public enum LogLevel {
-        INFO,
-        WARN,
-        ERROR
-    }
 }

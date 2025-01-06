@@ -8,6 +8,6 @@ import lombok.Getter;
 public class LogQuery extends PageQuery{
     private String username;
 
-    // null: 不过滤, 1: WARN, 2: ERROR
-    private Integer logLeveL;
+    // 0: 不过滤, 1: WARN, 2: ERROR
+    private int logLeveL;
 }

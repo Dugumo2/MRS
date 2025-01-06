@@ -95,7 +95,7 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     public Result register(@RequestParam String logName,@RequestParam String password,@RequestParam String email,@RequestParam String checkCode) throws Exception {
 
-        String lockKey = "DMS:register:" + email;
+        String lockKey = "MRS:register:" + email;
         Boolean isLocked = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, "1", 1, TimeUnit.MINUTES);
 
         if (!isLocked) {
@@ -134,7 +134,7 @@ public class UserController {
             userService.save(user);
 
             // 删除已使用的验证码
-            stringRedisTemplate.delete("DMS:code:" + email);
+            stringRedisTemplate.delete("MRS:code:" + email);
 
             return Result.ok("用户创建成功");
 

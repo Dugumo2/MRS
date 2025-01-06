@@ -8,6 +8,8 @@ import com.epoch.mrs.domain.vo.CommentVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface CommentMapper extends BaseMapper<Comment> {
     /**
@@ -18,4 +20,8 @@ public interface CommentMapper extends BaseMapper<Comment> {
      * @return 分页的 CommentVo 列表
      */
     IPage<CommentVo> selectCommentVoPage(@Param("page") Page<?> page, @Param("filmId") Integer filmId);
+
+    List<Integer> getCommentIdsByFilmId(@Param("filmId") int filmId);
+
+
 }

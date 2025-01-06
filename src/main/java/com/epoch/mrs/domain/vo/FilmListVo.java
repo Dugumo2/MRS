@@ -11,7 +11,6 @@ public class FilmListVo {
 
     private String title;
 
-
     private BigDecimal avgScore;
 
     private String imageUrl;

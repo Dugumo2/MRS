@@ -2,7 +2,11 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true" />
+      <profile default="true" name="Default" enabled="true">
+        <processorPath>
+          <entry name="$PROJECT_DIR$/../../Develop2/apache-maven-3.9.6/mvn_repo/org/projectlombok/lombok/1.18.36" />
+        </processorPath>
+      </profile>
       <profile name="Annotation profile for MRS" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />

@@ -2,6 +2,7 @@ package com.epoch.mrs.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.epoch.mrs.annotation.OperationLog;
 import com.epoch.mrs.domain.dto.PageDTO;
 import com.epoch.mrs.domain.po.Comment;
 import com.epoch.mrs.domain.po.Film;
@@ -37,6 +38,7 @@ public class CommentController {
      */
     @PostMapping("/post")
     @Transactional
+    @OperationLog("发表评论")
     public Result postComment(@RequestParam int filmId,
                               @RequestParam String content,
                               @RequestParam BigDecimal score) {
@@ -101,10 +103,38 @@ public class CommentController {
     }
 
 
-    @PostMapping("/delete")
-    public Result deleteComment(@RequestParam int commentId) {
 
-        return Result.ok();
+    /**
+     * 删除评论
+     *
+     * @param commentId 评论ID
+     * @return 操作结果
+     */
+    @PostMapping("/delete")
+    @OperationLog("删除评论")
+    public Result deleteComment(@RequestParam int commentId) {
+        // 获取当前用户是否为管理员
+        boolean isAdmin = StpUtil.hasRole("admin");
+
+        if (!isAdmin) {
+            // 如果不是管理员，检查评论是否属于当前用户
+            int currentUserId = StpUtil.getLoginIdAsInt();
+            Comment comment = commentService.getById(commentId);
+            if (comment == null) {
+                return Result.fail("评论不存在。");
+            }
+            if (comment.getUserId() != currentUserId) {
+                return Result.fail("你没有权限删除此评论。");
+            }
+        }
+
+        try {
+            Result result = commentService.deleteCommentAndRecalculateAvg(commentId);
+            return result;
+        } catch (Exception e) {
+            log.error("删除评论失败，commentId={}，错误信息={}", commentId, e.getMessage());
+            return Result.fail("删除评论失败，请稍后再试。");
+        }
     }
 
     @PostMapping("/list")
