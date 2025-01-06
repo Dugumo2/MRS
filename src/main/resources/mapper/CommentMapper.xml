@@ -26,6 +26,9 @@
         users u ON c.user_id = u.id
         WHERE
         c.film_id = #{filmId}
+        ORDER BY
+        CASE WHEN c.user_id = #{currentUserId} THEN 0 ELSE 1 END, <!-- 当前用户的评论排在前面 -->
+        c.create_time DESC <!-- 按时间降序 -->
         <!-- ORDER BY 和 LIMIT 由 MyBatis-Plus 分页插件注入 -->
     </select>
 

@@ -32,17 +32,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public PageDTO<CommentVo> queryCommentsPage(CommentQuery commentQuery) {
-        // 创建分页对象，根据前端传递的排序参数
+        // 创建分页对象，设置默认排序
         Page<CommentVo> page = commentQuery.toMpPage(
-                new OrderItem().setAsc(commentQuery.getIsAsc()).setColumn(commentQuery.getSortBy())
+                new OrderItem().setAsc(false).setColumn("create_time") // 默认按时间降序
         );
 
-        // 调用自定义的 Mapper 方法进行分页查询
-        IPage<CommentVo> commentVoPage = commentMapper.selectCommentVoPage(page, commentQuery.getFilmId());
+        // 调用自定义的 Mapper 方法进行分页查询，传递 filmId 和 currentUserId
+        IPage<CommentVo> commentVoPage = commentMapper.selectCommentVoPage(
+                page,
+                commentQuery.getFilmId(),
+                commentQuery.getCurrentUserId()
+        );
 
         // 将 MyBatis-Plus 的 Page 转换为自定义的 PageDTO
         return PageDTO.from(commentVoPage);
     }
+
 
     @Override
     public List<Integer> getCommentIdsByFilmId(int filmId) {

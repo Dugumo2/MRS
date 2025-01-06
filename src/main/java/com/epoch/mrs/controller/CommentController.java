@@ -139,6 +139,9 @@ public class CommentController {
 
     @PostMapping("/list")
     public Result getCommentByFilm(@RequestBody CommentQuery commentQuery) {
+        int uerId = StpUtil.getLoginIdAsInt();
+        commentQuery.setCurrentUserId(uerId);
+
         PageDTO<CommentVo> page = commentService.queryCommentsPage(commentQuery);
         return Result.ok(page);
     }

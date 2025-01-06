@@ -19,7 +19,7 @@ public interface CommentMapper extends BaseMapper<Comment> {
      * @param filmId  电影 ID 作为过滤条件
      * @return 分页的 CommentVo 列表
      */
-    IPage<CommentVo> selectCommentVoPage(@Param("page") Page<?> page, @Param("filmId") Integer filmId);
+    IPage<CommentVo> selectCommentVoPage(@Param("page") Page<?> page, @Param("filmId") Integer filmId,@Param("currentUserId") Integer currentUserId);
 
     List<Integer> getCommentIdsByFilmId(@Param("filmId") int filmId);
 
