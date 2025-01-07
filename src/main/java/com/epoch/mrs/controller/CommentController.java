@@ -42,6 +42,9 @@ public class CommentController {
     public Result postComment(@RequestParam int filmId,
                               @RequestParam String content,
                               @RequestParam BigDecimal score) {
+        if(score.intValue() >= 10){
+            return Result.fail("评分不能超过9.9");
+        }
         // 获取当前登录的用户ID
         int userId = StpUtil.getLoginIdAsInt();
 
