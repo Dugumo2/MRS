@@ -37,13 +37,13 @@ public class OperationLogAspect {
 
     @Around("operationLogPointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        // ============== 1. 获取方法、注解、动作描述等信息 ==============
+        //1. 获取方法、注解、动作描述等信息
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         OperationLog operationLog = method.getAnnotation(OperationLog.class);
         String action = operationLog.value();
 
-        // ============== 2. 先执行目标方法 ==============
+        // 2. 先执行目标方法
         Object result;
         Throwable throwable = null;
         try {
@@ -54,7 +54,7 @@ public class OperationLogAspect {
             result = null;
         }
 
-        // ============== 3. 获取当前登录用户信息 ==============
+        // 3. 获取当前登录用户信息
         Long userId = -1L;
         String username = "GUEST";
         try {
@@ -67,7 +67,7 @@ public class OperationLogAspect {
             log.error("Get user info failed: {}", e.getMessage());
         }
 
-        // ============== 4. 构造日志实体写入数据库 ==============
+        //4. 构造日志实体写入数据库
         // 此处仅示例：默认 INFO 级别，若有异常，可改为ERROR级别
         Log dbLog = new Log()
                 .setUserId(userId)
@@ -80,7 +80,7 @@ public class OperationLogAspect {
         // 使用 MyBatis-Plus service 保存
         logService.save(dbLog);
 
-        // ============== 5. 如果有异常，继续向外抛，以便上层处理 ==============
+        // 5. 如果有异常，继续向外抛，以便上层处理
         if (throwable != null) {
             throw throwable;
         }
