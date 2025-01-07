@@ -68,7 +68,6 @@ public class OperationLogAspect {
         }
 
         //4. 构造日志实体写入数据库
-        // 此处仅示例：默认 INFO 级别，若有异常，可改为ERROR级别
         Log dbLog = new Log()
                 .setUserId(userId)
                 .setUsername(username)
@@ -77,7 +76,6 @@ public class OperationLogAspect {
                 .setLogMessage(buildLogMessage(joinPoint, throwable))
                 .setTimestamp(LocalDateTime.now());
 
-        // 使用 MyBatis-Plus service 保存
         logService.save(dbLog);
 
         // 5. 如果有异常，继续向外抛，以便上层处理
